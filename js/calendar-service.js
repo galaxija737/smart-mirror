@@ -8,7 +8,7 @@
 
     service.getCalendarEvents = function() {
       service.events = [];
-      return loadFile(config.calendar.icals);
+      return loadFile(config.calendar.icss);
     }
 
     var loadFile = function(urls) {
@@ -20,24 +20,24 @@
 
       return $q.all(promises).then(function(data) {
         for (var i = 0; i < promises.length; i++) {
-          parseICAL(data[i].data);
+          parseICS(data[i].data);
         }
       });
     }
 
-    var makeDate = function(type, ical_date) {
-        if(ical_date.endsWith('Z')){
-            return moment(ical_date, 'YYYYMMDDTHHmmssZ');
+    var makeDate = function(type, ics_date) {
+        if(ics_date.endsWith('Z')){
+            return moment(ics_date, 'YYYYMMDDTHHmmssZ');
         }
 
         if(!type.endsWith('VALUE=DATE')){
-            return moment(ical_date, 'YYYYMMDDTHHmmss');
+            return moment(ics_date, 'YYYYMMDDTHHmmss');
         } else {
-            return moment(ical_date, 'YYYYMMDD');
+            return moment(ics_date, 'YYYYMMDD');
         }
     }
 
-    var parseICAL = function(data) {
+    var parseICS = function(data) {
       //Ensure cal is empty
       var events = [];
 
@@ -72,7 +72,7 @@
 
           //Split the item based on the first ":"
           var idx = ln.indexOf(':');
-          //Apply trimming to values to reduce risks of badly formatted ical files.
+          //Apply trimming to values to reduce risks of badly formatted ics files.
           var type = ln.substr(0, idx).replace(/^\s\s*/, '').replace(/\s\s*$/, ''); //Trim
           var val = ln.substr(idx + 1).replace(/^\s\s*/, '').replace(/\s\s*$/, '');
 
